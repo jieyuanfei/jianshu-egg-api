@@ -22,6 +22,37 @@ class ArticleTypeController extends Controller {
     }
   }
 
+  // 删除文集
+  async del() {
+    const ctx = this.ctx;
+    const { id } = ctx.request.body
+    const articleType = await ctx.service.articleType.del(id);
+    if (articleType.code === 0) {
+      ctx.success(articleType.data)
+    } else {
+      ctx.error(articleType.code, articleType.msg)
+    }
+  }
+
+  // 修改文集
+  async update() {
+    const ctx = this.ctx;
+    const { id, typeName } = ctx.request.body
+    if (id == null || typeName.length === 0) {
+      ctx.error(1, '文集名称不能为空')
+    }
+    let query = {
+      id: id,
+      type_name: typeName
+    }
+    const articleType = await ctx.service.articleType.update(query);
+    if (articleType.code === 0) {
+      ctx.success(articleType.data)
+    } else {
+      ctx.error(articleType.code, articleType.msg)
+    }
+  }
+
 }
 
 module.exports = ArticleTypeController

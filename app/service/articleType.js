@@ -6,8 +6,8 @@ class ArticleType extends Service {
   async list() {
     let user_id = this.ctx.userId;
     return this.ctx.model.ArticleTypes.findAndCountAll({
-      user_id: user_id,
-      order: [[ 'created_at', 'desc' ]],
+      where: { user_id: user_id },
+      order: [[ 'created_at', 'asc' ]],
     });
   }
 
@@ -47,20 +47,42 @@ class ArticleType extends Service {
 
   }
 
-  async update({ id, updates }) {
-    const articleTypes = await this.ctx.model.ArticleTypes.findById(id);
+  async update(query) {
+    const articleTypes = await this.ctx.model.ArticleTypes.findById(query.id);
     if (!articleTypes) {
-      this.ctx.error(404, '不存在文集类型');
+      return {
+        code: 404,
+        msg: '不存在文集类型'
+      }
     }
-    return articleTypes.update(updates);
+    let user_id = this.ctx.userId
+    const articleTypes2 = await this.ctx.model.ArticleTypes.findAndCountAll({ where: { type_name: query.type_name ,user_id: user_id} });
+    if (articleTypes2.count > 0) {
+      return {
+        code: 1,
+        msg: '已存在该文集类型'
+      }
+    }
+    let data = await articleTypes.update(query);
+    return {
+      code: 0,
+      data: data
+    }
   }
 
   async del(id) {
     const articleTypes = await this.ctx.model.ArticleTypes.findById(id);
     if (!articleTypes) {
-      this.ctx.error(404, '不存在文集类型');
+      return {
+        code: 404,
+        msg: '不存在文集类型'
+      }
     }
-    return articleTypes.destroy();
+    let data = await articleTypes.destroy();
+    return {
+      code: 0,
+      data: data.dataValues
+    }
   }
 }
 

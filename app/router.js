@@ -12,12 +12,20 @@ module.exports = app => {
   router.get('/admin/getCaptcha', controller.admin.login.getCaptcha);
   // 登录
   router.post('/login', controller.client.login.login);
+
   // 通过用户Id获取文集类型
   router.get('/getListByUserId', auth, controller.articleType.getListByUserId);
   // 通过用户Id获取文集类型
   router.post('/addType', auth, controller.articleType.create);
+  // 通过Id修改文集类型
+  router.post('/updateType', auth, controller.articleType.update);
+  // 通过Id删除文集类型
+  router.post('/delType', auth, controller.articleType.del);
+
   // 获取文章列表
   router.get('/getArticleList', controller.article.getArticleList);
+  // 通过type_id 获取文章列表
+  router.get('/getArticleListByTypes', controller.article.getArticleListByTypes);
 
   router.get('/users', controller.users.index);
   router.get('/test', controller.users.test);

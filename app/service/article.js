@@ -16,6 +16,25 @@ class ArticleService extends Service {
     }
     return this.ctx.model.Article.findAndCountAll(options);
   }
+  // 根据其他条件添加
+  async getArticleListByOther(wheres, offset, limit) {
+    const options = {
+      offset,
+      limit,
+      // attributes: [ 'id', 'title', 'content', 'user_id', 'created_at', 'updated_at' ],
+      order: [[ 'created_at', 'desc' ], [ 'id', 'desc' ]],
+    };
+    if (offset) {
+      options.offset = offset
+    }
+    if (limit) {
+      options.limit = limit
+    }
+    if (wheres) {
+      options.where = wheres
+    }
+    return this.ctx.model.Article.findAndCountAll(options);
+  }
   // 生成七牛token
   async getQiniuToken() {
     const { app } = this

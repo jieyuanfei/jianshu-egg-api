@@ -10,6 +10,16 @@ class ArticleController extends Controller {
     let data = await ctx.service.article.getArticleList(query)
     ctx.success(data)
   }
+  // 根据类型id获取文章列表
+  async getArticleListByTypes() {
+    const { ctx } = this
+    let type_id = ctx.query.type_id
+    let wheres = {
+      type_id
+    }
+    let data = await ctx.service.article.getArticleListByOther(wheres)
+    ctx.success(data)
+  }
 
 }
 
