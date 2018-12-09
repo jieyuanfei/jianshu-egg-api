@@ -15,7 +15,7 @@ module.exports = appInfo => {
       database: 'egg-sequelize-example-dev',
       host: '127.0.0.1',
       username: 'root',
-      password: '123',
+      password: 'root',
       port: 3306,
     },
     user: { // 初始化管理员的账号

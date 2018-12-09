@@ -35,6 +35,49 @@ class ArticleService extends Service {
     }
     return this.ctx.model.Article.findAndCountAll(options);
   }
+  // 新增
+  async create(query) {
+    const { ctx } = this;
+    let option = {
+      title: '标题栏',
+      content: ' ',
+      user_id: query.user_id,
+      type_id: query.type_id,
+      article_num: 0,
+      ready_num: 0,
+      like_num: 0,
+      comment_num: 0,
+      status: 1,
+      created_at: new Date(),
+      updated_at: new Date(),
+    }
+    let data = await ctx.model.Article.create(option);
+    if (!data) {
+      return {
+        code: 1,
+        msg: '插入失败'
+      }
+    }
+    return {
+      code: 0,
+      data: data.dataValues
+    }
+
+  }
+  async del(id) {
+    const article = await this.ctx.model.Article.findById(id);
+    if (!article) {
+      return {
+        code: 404,
+        msg: '不存在文集类型'
+      }
+    }
+    let data = await article.destroy();
+    return {
+      code: 0,
+      data: data.dataValues
+    }
+  }
   // 生成七牛token
   async getQiniuToken() {
     const { app } = this

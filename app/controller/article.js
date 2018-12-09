@@ -20,6 +20,29 @@ class ArticleController extends Controller {
     let data = await ctx.service.article.getArticleListByOther(wheres)
     ctx.success(data)
   }
+  // 根据typeId创建文章
+  async addArticleByTypeId() {
+    const { ctx } = this
+    const { type_id } = ctx.request.body
+    let query = {
+      type_id,
+      user_id: ctx.userId
+    }
+    let data = await ctx.service.article.create(query)
+    ctx.success(data)
+  }
+
+  // 删除文集
+  async del() {
+    const ctx = this.ctx;
+    const { id } = ctx.request.body
+    const articleType = await ctx.service.article.del(id);
+    if (articleType.code === 0) {
+      ctx.success(articleType.data)
+    } else {
+      ctx.error(articleType.code, articleType.msg)
+    }
+  }
 
 }
 

@@ -21,10 +21,10 @@
     "egg-mock": "^3.14.0",
     "eslint": "^4.11.0",
     "eslint-config-egg": "^6.0.0",
-    "webstorm-disable-index": "^1.2.0",
     "factory-girl": "^5.0.2",
     "lodash": "^4.17.10",
-    "sequelize-cli": "^4.0.0"
+    "sequelize-cli": "^4.1.1",
+    "webstorm-disable-index": "^1.2.0"
   },
   "engines": {
     "node": ">=8.9.0"
