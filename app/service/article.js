@@ -9,6 +9,9 @@ class ArticleService extends Service {
       attributes: [ 'id', 'title', 'user_id', 'created_at', 'updated_at' ],
       order: [[ 'created_at', 'desc' ], [ 'id', 'desc' ]],
     };
+    options.where = {
+      status: [ 0, 1, 2 ]
+    }
     if (user_id) {
       options.where = {
         user_id,
@@ -32,8 +35,27 @@ class ArticleService extends Service {
     }
     if (wheres) {
       options.where = wheres
+      options.where.status = [ 0, 1, 2 ]
+    } else {
+      options.where = {
+        status: [ 0, 1, 2 ]
+      }
     }
     return this.ctx.model.Article.findAndCountAll(options);
+  }
+  // 根据Id
+  async getArticleById(id) {
+    let data = await this.ctx.model.Article.findById(id);
+    if (!data) {
+      return {
+        code: 404,
+        msg: '不存在文集类型'
+      }
+    }
+    return {
+      code: 0,
+      data: data
+    }
   }
   // 新增
   async create(query) {
@@ -76,6 +98,20 @@ class ArticleService extends Service {
     return {
       code: 0,
       data: data.dataValues
+    }
+  }
+  async update(query) {
+    const article = await this.ctx.model.Article.findById(query.id);
+    if (!article) {
+      return {
+        code: 404,
+        msg: '文章已被删除'
+      }
+    }
+    let data = await article.update(query);
+    return {
+      code: 0,
+      data: data
     }
   }
   // 生成七牛token

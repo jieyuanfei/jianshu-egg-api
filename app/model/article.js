@@ -6,6 +6,7 @@ module.exports = app => {
   const Article = app.model.define('t_articles', {
     id: { type: INTEGER, primaryKey: true, autoIncrement: true },
     title: STRING(255),
+    text: STRING(255),
     content: STRING(10000),
     user_id: INTEGER,
     type_id: INTEGER,
