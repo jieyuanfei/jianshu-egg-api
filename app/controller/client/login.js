@@ -27,6 +27,7 @@ class LoginController extends Controller {
     let data = {
       username: userData.user.username,
       uid: userData.user.id,
+      header_url: userData.user.header_url,
       token: userData.token
     }
     ctx.success(data)

@@ -3,6 +3,7 @@
 module.exports = app => {
   const { STRING, INTEGER, DATE } = app.Sequelize;
 
+  // 第一个是别名 第二个是表名
   const Article = app.model.define('t_articles', {
     id: { type: INTEGER, primaryKey: true, autoIncrement: true },
     title: STRING(255),
@@ -17,6 +18,9 @@ module.exports = app => {
     status: INTEGER(2),
     created_at: DATE,
     updated_at: DATE
+  }, {
+    freezeTableName: true,
+    tableName: 't_articles'
   });
 
   Article.findOneByElement = async function(params) {
@@ -40,6 +44,9 @@ module.exports = app => {
       where: params,
     });
 
+  };
+  Article.associate = function() {
+    app.model.Article.belongsTo(app.model.Users, { foreignKey: 'user_id', targetKey: 'id' });
   };
   return Article;
 };

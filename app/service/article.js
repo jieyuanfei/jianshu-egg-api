@@ -6,8 +6,12 @@ class ArticleService extends Service {
     const options = {
       offset,
       limit,
-      attributes: [ 'id', 'title', 'user_id', 'created_at', 'updated_at' ],
+      attributes: [ 'id', 'title', 'text', 'user_id', 'type_id', 'article_num', 'ready_num', 'like_num', 'comment_num', 'status', 'created_at', 'updated_at' ],
       order: [[ 'created_at', 'desc' ], [ 'id', 'desc' ]],
+      include: {
+        attributes: [ 'username', 'header_url' ],
+        model: this.ctx.model.Users
+      }
     };
     options.where = {
       status: [ 0, 1, 2 ]
