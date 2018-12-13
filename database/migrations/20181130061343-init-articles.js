@@ -6,7 +6,10 @@ module.exports = {
     const { INTEGER, DATE, STRING } = Sequelize;
     await queryInterface.createTable('t_articles', {
       id: { type: INTEGER, primaryKey: true, autoIncrement: true },
+      article_id: INTEGER,
       title: STRING(255),
+      text: STRING(255),
+      images: STRING(1500), // 最多保存5张文章的图片
       content: STRING(10000),
       user_id: INTEGER,
       type_id: INTEGER,

@@ -6,7 +6,7 @@ class ArticleService extends Service {
     const options = {
       offset,
       limit,
-      attributes: [ 'id', 'title', 'text', 'user_id', 'type_id', 'article_num', 'ready_num', 'like_num', 'comment_num', 'status', 'created_at', 'updated_at' ],
+      attributes: [ 'id', 'title', 'text', 'images', 'user_id', 'type_id', 'article_num', 'ready_num', 'like_num', 'comment_num', 'status', 'created_at', 'updated_at' ],
       order: [[ 'created_at', 'desc' ], [ 'id', 'desc' ]],
       include: {
         attributes: [ 'username', 'header_url' ],
@@ -21,7 +21,16 @@ class ArticleService extends Service {
         user_id,
       };
     }
-    return this.ctx.model.Article.findAndCountAll(options);
+    let data = await this.ctx.model.Article.findAndCountAll(options)
+    data.rows = data.rows.map(info => {
+      if (info.images) {
+        info.images = JSON.parse(info.images)
+      } else {
+        info.images = [];
+      }
+      return info
+    })
+    return data;
   }
   // 根据其他条件添加
   async getArticleListByOther(wheres, offset, limit) {
@@ -124,11 +133,52 @@ class ArticleService extends Service {
     // 这里需要七牛的Access Key和Secret Key
     let mac = new qiniu.auth.digest.Mac(app.config.qiniu.ak, app.config.qiniu.sk);
     let options = {
-      scope: 'blog',
+      scope: 'jianshu',
     };
     let putPolicy = new qiniu.rs.PutPolicy(options);
     let uploadToken = putPolicy.uploadToken(mac);
     return uploadToken
+  }
+
+  // 备份表数据更新
+  async createBack(query) {
+    const { ctx } = this;
+    let option = {
+      article_id: query.article_id,
+      title: query.title,
+      content: query.content,
+      text: query.text,
+      article_num: query.article_num,
+      status: 1,
+      created_at: new Date(),
+      updated_at: new Date(),
+    }
+    let data = await ctx.model.ArticleBack.create(option);
+    if (!data) {
+      return {
+        code: 1,
+        msg: '插入失败'
+      }
+    }
+    return {
+      code: 0,
+      data: data.dataValues
+    }
+
+  }
+  // 根据类型ID 获取文章列表
+  async getArticleBackByTypeId() {
+    // const { ctx } = this;
+    return new Promise((resolve, reject) => {
+      this.app.model.query('SELECT a.id,b.* ' +
+        'FROM t_articles a LEFT JOIN (SELECT id,article_id,MAX(created_at) as created_at,title,content ' +
+        'FROM t_article_backs type_id = 1) as b ON (a.id = b.article_id) ' +
+        'WHERE a.type_id = 1', { type: 'SELECT' }).then(results => {
+        resolve(results)
+      }).catch(err => {
+        reject(err)
+      })
+    })
   }
 }
 

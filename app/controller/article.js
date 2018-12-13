@@ -2,6 +2,19 @@ const Controller = require('egg').Controller
 const cheerio = require('cheerio');
 
 class ArticleController extends Controller {
+  // 获取七牛token
+  async getQiniuToken() {
+    const { ctx } = this
+    let resMsg = {
+      code: 0,
+      data: {},
+      msg: '获取token成功'
+    }
+    let uploadToken = await ctx.service.article.getQiniuToken()
+    console.log(uploadToken)
+    resMsg.data.token = uploadToken
+    ctx.success(resMsg)
+  }
   // 获取所有文章列表
   async getArticleList() {
     const { ctx } = this
@@ -98,11 +111,22 @@ class ArticleController extends Controller {
     const ctx = this.ctx;
     const { query, html } = ctx.request.body
     let $ = cheerio.load('<div class="html">' + html + '</div>');
-    let text = $('.html')
-      .text()
-      .replace(/\s+/g, '');
+    let text = $('.html').text().replace(/\s+/g, '');
     query.text = text;
-    query.article_num = text.length
+    query.article_num = text.length;
+    if (text.length > 254) { // 描述文字长度控制在255个字就ok
+      query.text = text.substring(0, 254)
+    }
+    let images = $('.html').find('img');
+    let imgList = [];
+    // 保存3张图片就够了
+    images.each(function(index) {
+      if (index > 2) {
+        return false;
+      }
+      imgList.push($(this).attr('src'))
+    })
+    query.images = JSON.stringify(imgList)
     const article = await ctx.service.article.update(query);
     if (article.code === 0) {
       ctx.success(article.data)
@@ -112,7 +136,7 @@ class ArticleController extends Controller {
   }
 
   // 修改发布状态
-  async updateStatus() {
+  async backEdit() {
     const ctx = this.ctx;
     const { query, html } = ctx.request.body
     let $ = cheerio.load('<div class="html">' + html + '</div>');
@@ -121,12 +145,22 @@ class ArticleController extends Controller {
       .replace(/\s+/g, '');
     query.text = text;
     query.article_num = text.length
-    const article = await ctx.service.article.update(query);
+    const article = await ctx.service.article.createBack(query);
     if (article.code === 0) {
       ctx.success(article.data)
     } else {
       ctx.error(article.code, article.msg)
     }
+  }
+  // 通过类型Id 获取文章列表和备份表数据
+  async getArticleBackByTypeId() {
+    const { ctx } = this
+    let type_id = ctx.query.type_id
+    let wheres = {
+      type_id
+    }
+    let data = await ctx.service.article.getArticleBackByTypeId(wheres)
+    ctx.success(data)
   }
 }
 

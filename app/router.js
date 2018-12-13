@@ -12,6 +12,8 @@ module.exports = app => {
   router.get('/admin/getCaptcha', controller.admin.login.getCaptcha);
   // 登录
   router.post('/login', controller.client.login.login);
+  // 获取七牛token
+  router.get('/getQiniuToken', auth, controller.article.getQiniuToken);
 
   // 通过用户Id获取文集类型
   router.get('/getListByUserId', auth, controller.articleType.getListByUserId);
@@ -26,6 +28,8 @@ module.exports = app => {
   router.get('/getArticleList', controller.article.getArticleList);
   // 通过type_id 获取文章列表
   router.get('/getArticleListByTypes', controller.article.getArticleListByTypes);
+  // 通过type_id 获取文章列表+备份
+  router.get('/getArticleBackByTypeId', controller.article.getArticleBackByTypeId);
   // 通过id 获取文章列表
   router.get('/getArticleById', controller.article.getArticleById);
   // 通过id 获取文章详情
@@ -36,6 +40,8 @@ module.exports = app => {
   router.post('/delArticle', auth, controller.article.updateDel);
   // 修改文章
   router.post('/updateArticle', auth, controller.article.update);
+  // 更新修改文章
+  router.post('/editArticle', auth, controller.article.backEdit);
 
   router.get('/users', controller.users.index);
   router.get('/test', controller.users.test);

@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken')
 module.exports = () => {
   return async function auth(ctx, next) {
     try {
-      console.log(ctx.get('Authorization'));
       let decode = jwt.verify(ctx.get('Authorization'), ctx.app.config.jwt.cert)
       ctx.userId = decode.id
     } catch (err) {

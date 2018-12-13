@@ -29,8 +29,8 @@ module.exports = appInfo => {
       cert: 'huanggegehaoshuai' // jwt秘钥
     },
     qiniu: { // 这里填写你七牛的Access Key和Secret Key
-      ak: '',
-      sk: ''
+      ak: '63gcZSNx8m_9ve2kx9zNAxUaxwZkWp5-whv3GvA0',
+      sk: 'zErEx1r_giJ2ElesrJBfgE-1ZYpz-KA9PAcliNvS'
     }
   }
 };

@@ -8,6 +8,7 @@ module.exports = app => {
     id: { type: INTEGER, primaryKey: true, autoIncrement: true },
     title: STRING(255),
     text: STRING(255),
+    images: STRING(1500), // 最多保存5张图片
     content: STRING(10000),
     user_id: INTEGER,
     type_id: INTEGER,
@@ -47,6 +48,9 @@ module.exports = app => {
   };
   Article.associate = function() {
     app.model.Article.belongsTo(app.model.Users, { foreignKey: 'user_id', targetKey: 'id' });
+  };
+  Article.associate = function() {
+    app.model.Article.belongsTo(app.model.ArticleBack, { foreignKey: 'id', targetKey: 'article_id' });
   };
   return Article;
 };
