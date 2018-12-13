@@ -167,13 +167,19 @@ class ArticleService extends Service {
 
   }
   // 根据类型ID 获取文章列表
-  async getArticleBackByTypeId() {
+  async getArticleBackByTypeId(typeId) {
     // const { ctx } = this;
     return new Promise((resolve, reject) => {
-      this.app.model.query('SELECT a.id,b.* ' +
-        'FROM t_articles a LEFT JOIN (SELECT id,article_id,MAX(created_at) as created_at,title,content ' +
-        'FROM t_article_backs type_id = 1) as b ON (a.id = b.article_id) ' +
-        'WHERE a.type_id = 1', { type: 'SELECT' }).then(results => {
+      this.app.model.query('SELECT ' +
+        'a.id,' +
+        'b.id as backId,' +
+        '(case b.title when null then a.title else b.title) as title,' +
+        '(case b.content when null then a.content else b.content) as content,' +
+        '(case b.article_num when null then a.article_num else b.article_num) as article_num,' +
+        'status' +
+        'FROM t_articles a LEFT JOIN (SELECT id,article_id,MAX(created_at) as created_at,title,content,article_num ' +
+        'FROM t_article_backs type_id = :typeId ) as b ON (a.id = b.article_id) ' +
+        'WHERE a.type_id = :typeId ', { type: 'SELECT', replacements: { typeId: typeId } }).then(results => {
         resolve(results)
       }).catch(err => {
         reject(err)
