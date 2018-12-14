@@ -91,12 +91,12 @@ class ArticleController extends Controller {
   }
 
   // 修改状态，删除文章
-  async updateDel() {
+  async updateStatus() {
     const ctx = this.ctx;
-    const { id } = ctx.request.body
+    const { id, status } = ctx.request.body
     let query = {
       id,
-      status: 3
+      status: status
     }
     const article = await ctx.service.article.update(query);
     if (article.code === 0) {
@@ -145,21 +145,30 @@ class ArticleController extends Controller {
       .replace(/\s+/g, '');
     query.text = text;
     query.article_num = text.length
-    const article = await ctx.service.article.createBack(query);
+    let article = await ctx.service.article.createBack(query);
+
     if (article.code === 0) {
       ctx.success(article.data)
     } else {
       ctx.error(article.code, article.msg)
     }
   }
+
   // 通过类型Id 获取文章列表和备份表数据
   async getArticleBackByTypeId() {
     const { ctx } = this
     let type_id = ctx.query.type_id
-    let wheres = {
-      type_id
+    let data = await ctx.service.article.getArticleBackByTypeId(type_id)
+    ctx.success(data)
+  }
+  // 根据backId获取文章
+  async getArticleBackById() {
+    const { ctx } = this
+    let id = ctx.query.id
+    if (!id) {
+      ctx.error(404, '文章id不能为空')
     }
-    let data = await ctx.service.article.getArticleBackByTypeId(wheres)
+    let data = await ctx.service.article.getArticleBackById(id)
     ctx.success(data)
   }
 }

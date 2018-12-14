@@ -30,14 +30,16 @@ module.exports = app => {
   router.get('/getArticleListByTypes', controller.article.getArticleListByTypes);
   // 通过type_id 获取文章列表+备份
   router.get('/getArticleBackByTypeId', controller.article.getArticleBackByTypeId);
+  // 通过backId 获取备份表
+  router.get('/getArticleBackById', controller.article.getArticleBackById);
   // 通过id 获取文章列表
   router.get('/getArticleById', controller.article.getArticleById);
   // 通过id 获取文章详情
   router.get('/getArticleDetailById', controller.article.getArticleDetailById);
   // 通过type_id 添加文章
   router.post('/addArticleByTypeId', auth, controller.article.addArticleByTypeId);
-  // 删除文章
-  router.post('/delArticle', auth, controller.article.updateDel);
+  // 修改文章状态
+  router.post('/updateStatus', auth, controller.article.updateStatus);
   // 修改文章
   router.post('/updateArticle', auth, controller.article.update);
   // 更新修改文章

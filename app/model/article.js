@@ -49,8 +49,5 @@ module.exports = app => {
   Article.associate = function() {
     app.model.Article.belongsTo(app.model.Users, { foreignKey: 'user_id', targetKey: 'id' });
   };
-  Article.associate = function() {
-    app.model.Article.belongsTo(app.model.ArticleBack, { foreignKey: 'id', targetKey: 'article_id' });
-  };
   return Article;
 };

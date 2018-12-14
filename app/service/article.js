@@ -73,31 +73,52 @@ class ArticleService extends Service {
   // 新增
   async create(query) {
     const { ctx } = this;
-    let option = {
-      title: '标题栏',
-      content: ' ',
-      user_id: query.user_id,
-      type_id: query.type_id,
-      article_num: 0,
-      ready_num: 0,
-      like_num: 0,
-      comment_num: 0,
-      status: 1,
-      created_at: new Date(),
-      updated_at: new Date(),
-    }
-    let data = await ctx.model.Article.create(option);
-    if (!data) {
+    // 使用事务管理
+    try {
+      let option = {
+        title: '标题栏',
+        content: ' ',
+        user_id: query.user_id,
+        type_id: query.type_id,
+        article_num: 0,
+        ready_num: 0,
+        like_num: 0,
+        comment_num: 0,
+        status: 1,
+        created_at: new Date(),
+        updated_at: new Date(),
+      }
+      let data = await ctx.model.Article.create(option);
+      let optionBack = {
+        article_id: data.id,
+        type_id: data.type_id,
+        title: data.title,
+        text: '',
+        content: '',
+        article_num: 0,
+        status: 0,
+        created_at: new Date(),
+        updated_at: new Date(),
+      }
+      let articleBack = await ctx.model.ArticleBack.create(optionBack);
+      return {
+        code: 0,
+        data: {
+          id: data.id,
+          status: data.status,
+          backId: articleBack.id,
+          title: data.title,
+          text: '',
+          article_num: 0,
+        }
+      }
+    } catch (e) {
+
       return {
         code: 1,
         msg: '插入失败'
       }
     }
-    return {
-      code: 0,
-      data: data.dataValues
-    }
-
   }
   async del(id) {
     const article = await this.ctx.model.Article.findById(id);
@@ -145,11 +166,12 @@ class ArticleService extends Service {
     const { ctx } = this;
     let option = {
       article_id: query.article_id,
+      type_id: query.type_id,
       title: query.title,
       content: query.content,
       text: query.text,
       article_num: query.article_num,
-      status: 1,
+      status: 0,
       created_at: new Date(),
       updated_at: new Date(),
     }
@@ -166,25 +188,62 @@ class ArticleService extends Service {
     }
 
   }
+  // 备份表更新
+  async updateBack(query) {
+    const articleBack = await this.ctx.model.ArticleBack.findById(query.id);
+    if (!articleBack) {
+      return {
+        code: 404,
+        msg: '文章已被删除'
+      }
+    }
+    let data = await articleBack.update(query);
+    return {
+      code: 0,
+      data: data
+    }
+  }
   // 根据类型ID 获取文章列表
   async getArticleBackByTypeId(typeId) {
-    // const { ctx } = this;
-    return new Promise((resolve, reject) => {
-      this.app.model.query('SELECT ' +
-        'a.id,' +
-        'b.id as backId,' +
-        '(case b.title when null then a.title else b.title) as title,' +
-        '(case b.content when null then a.content else b.content) as content,' +
-        '(case b.article_num when null then a.article_num else b.article_num) as article_num,' +
-        'status' +
-        'FROM t_articles a LEFT JOIN (SELECT id,article_id,MAX(created_at) as created_at,title,content,article_num ' +
-        'FROM t_article_backs type_id = :typeId ) as b ON (a.id = b.article_id) ' +
-        'WHERE a.type_id = :typeId ', { type: 'SELECT', replacements: { typeId: typeId } }).then(results => {
-        resolve(results)
-      }).catch(err => {
-        reject(err)
+    const options = {
+      attributes: [ 'id', 'status' ],
+      where: { type_id: typeId, status: [ 0, 1, 2 ] },
+      order: [[ 'updated_at', 'desc' ], [ 'id', 'desc' ]]
+    };
+    let articles = await this.ctx.model.Article.findAndCountAll(options);
+    let rows = []
+    for (let info of articles.rows) {
+      let op = {
+        where: { article_id: info.id },
+        order: [[ 'updated_at', 'desc' ]],
+        limit: 1
+      }
+      let articleBack = await this.ctx.model.ArticleBack.findAndCountAll(op)
+      rows.push({
+        id: info.id,
+        status: info.status,
+        backId: articleBack.rows[0].id,
+        title: articleBack.rows[0].title,
+        text: articleBack.rows[0].text,
+        article_num: articleBack.rows[0].title,
       })
-    })
+    }
+    articles.rows = rows;
+    return articles
+  }
+  // 根据backId 获取备份表信息
+  async getArticleBackById(id) {
+    let data = await this.ctx.model.ArticleBack.findById(id);
+    if (!data) {
+      return {
+        code: 404,
+        msg: '不存在文集类型'
+      }
+    }
+    return {
+      code: 0,
+      data: data
+    }
   }
 }
 
