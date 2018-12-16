@@ -10,6 +10,7 @@ module.exports = app => {
     type_id: INTEGER,
     title: STRING(255),
     text: STRING(255),
+    images: STRING(1500), // 最多保存5张图片
     content: STRING(10000),
     article_num: INTEGER,
     status: INTEGER,

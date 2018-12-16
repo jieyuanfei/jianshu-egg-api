@@ -45,6 +45,9 @@ module.exports = app => {
   // 更新修改文章
   router.post('/editArticle', auth, controller.article.backEdit);
 
+  // 获取评论列表
+  router.get('/getCommentListByArticleId', auth, controller.article.getCommentListByArticleId);
+
   router.get('/users', controller.users.index);
   router.get('/test', controller.users.test);
 

@@ -93,10 +93,11 @@ class ArticleController extends Controller {
   // 修改状态，删除文章
   async updateStatus() {
     const ctx = this.ctx;
-    const { id, status } = ctx.request.body
+    const { id, status, backId } = ctx.request.body
     let query = {
       id,
-      status: status
+      backId,
+      status
     }
     const article = await ctx.service.article.update(query);
     if (article.code === 0) {
@@ -140,9 +141,22 @@ class ArticleController extends Controller {
     const ctx = this.ctx;
     const { query, html } = ctx.request.body
     let $ = cheerio.load('<div class="html">' + html + '</div>');
-    let text = $('.html')
-      .text()
-      .replace(/\s+/g, '');
+    let text = $('.html').text().replace(/\s+/g, '');
+    query.text = text;
+    query.article_num = text.length;
+    if (text.length > 254) { // 描述文字长度控制在255个字就ok
+      query.text = text.substring(0, 254)
+    }
+    let images = $('.html').find('img');
+    let imgList = [];
+    // 保存3张图片就够了
+    images.each(function(index) {
+      if (index > 2) {
+        return false;
+      }
+      imgList.push($(this).attr('src'))
+    })
+    query.images = JSON.stringify(imgList)
     query.text = text;
     query.article_num = text.length
     let article = await ctx.service.article.createBack(query);
@@ -169,6 +183,29 @@ class ArticleController extends Controller {
       ctx.error(404, '文章id不能为空')
     }
     let data = await ctx.service.article.getArticleBackById(id)
+    ctx.success(data)
+  }
+  // 获取评论
+  async getCommentListByArticleId() {
+    const { ctx } = this
+    const query = {
+      article_id: ctx.query.article_id,
+      offset: ctx.helper.parseInt(ctx.query.offset || 0),
+      limit: ctx.helper.parseInt(ctx.query.limit || 10),
+    };
+    let data = await ctx.service.comment.getCommentList(query);
+    ctx.success(data);
+  }
+  // 添加评论
+  async addComment() {
+    const { ctx } = this
+    let data = await ctx.service.comment.create()
+    ctx.success(data)
+  }
+  // 添加评论回复
+  async addCommentReply() {
+    const { ctx } = this
+    let data = await ctx.service.comment.createReply()
     ctx.success(data)
   }
 }

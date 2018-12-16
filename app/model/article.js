@@ -16,7 +16,7 @@ module.exports = app => {
     ready_num: INTEGER(2),
     like_num: INTEGER(2),
     comment_num: INTEGER(2),
-    status: INTEGER(2),
+    status: INTEGER(2), // 0 发布 1 草稿 2 私密 3 删除
     created_at: DATE,
     updated_at: DATE
   }, {

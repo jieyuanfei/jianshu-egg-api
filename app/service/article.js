@@ -14,7 +14,7 @@ class ArticleService extends Service {
       }
     };
     options.where = {
-      status: [ 0, 1, 2 ]
+      status: 0
     }
     if (user_id) {
       options.where = {
@@ -65,10 +65,22 @@ class ArticleService extends Service {
         msg: '不存在文集类型'
       }
     }
+    data.ready_num = data.ready_num + 1;
+    this.addReadyNum(data.id)
     return {
       code: 0,
       data: data
     }
+  }
+  // 阅读数加 1
+  async addReadyNum(id) {
+    let data = this.app.model.query('update t_articles set ready_num = ready_num+1 where id=:id', { type: 'UPDATE', replacements: { id: id } }).then(results => results);
+    return data
+  }
+  // 评论数加 1
+  async addCommentNum(id) {
+    let data = this.app.model.query('update t_articles set comment_num = comment_num+1 where id=:id', { type: 'UPDATE', replacements: { id: id } }).then(results => results);
+    return data
   }
   // 新增
   async create(query) {
@@ -142,7 +154,23 @@ class ArticleService extends Service {
         msg: '文章已被删除'
       }
     }
-    let data = await article.update(query);
+    let option = {}
+    if (query.id) {
+      option.id = query.id
+    }
+    option.status = query.status
+    if (query.status === 0) { // 0 发布 重备份表获取title,content.....
+      let backup = await this.ctx.model.ArticleBack.findById(query.backId)
+      if (backup) {
+        option.title = backup.title
+        option.text = backup.text
+        option.images = backup.images
+        option.content = backup.content
+        option.article_num = backup.article_num
+        option.updated_at = new Date()
+      }
+    }
+    let data = await article.update(option);
     return {
       code: 0,
       data: data
@@ -168,6 +196,7 @@ class ArticleService extends Service {
       article_id: query.article_id,
       type_id: query.type_id,
       title: query.title,
+      images: query.images,
       content: query.content,
       text: query.text,
       article_num: query.article_num,
