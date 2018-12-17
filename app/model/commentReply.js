@@ -7,11 +7,12 @@ module.exports = app => {
   const CommentReply = app.model.define('t_comment_replys', {
     id: { type: INTEGER, primaryKey: true, autoIncrement: true },
     comment_id: INTEGER,
+    reply_id: INTEGER,
     from_user_id: INTEGER,
     from_user_name: STRING,
     to_user_id: INTEGER,
     to_user_name: STRING,
-    content: STRING,
+    content: STRING(600),
     created_at: DATE,
     updated_at: DATE,
   }, {

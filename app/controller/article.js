@@ -190,6 +190,7 @@ class ArticleController extends Controller {
     const { ctx } = this
     const query = {
       article_id: ctx.query.article_id,
+      user_id: ctx.query.user_id,
       offset: ctx.helper.parseInt(ctx.query.offset || 0),
       limit: ctx.helper.parseInt(ctx.query.limit || 10),
     };
@@ -199,13 +200,36 @@ class ArticleController extends Controller {
   // 添加评论
   async addComment() {
     const { ctx } = this
-    let data = await ctx.service.comment.create()
-    ctx.success(data)
+    const { query } = ctx.request.body
+    let user_id = ctx.userId
+    if (user_id) {
+      ctx.error(401, '请先登录')
+    }
+    query.user_id = user_id
+    let data = await ctx.service.comment.create(query)
+    if (data.code === 0) {
+      ctx.success(data)
+    } else {
+      ctx.error(data)
+    }
   }
   // 添加评论回复
   async addCommentReply() {
     const { ctx } = this
-    let data = await ctx.service.comment.createReply()
+    const { query } = ctx.request.body
+    let user_id = ctx.userId
+    if (user_id) {
+      ctx.error(401, '请先登录')
+    }
+    query.from_user_id = user_id
+    let data = await ctx.service.comment.createReply(query)
+    ctx.success(data)
+  }
+  // 评论点赞
+  async addCommentLoveNum() {
+    const { ctx } = this
+    const { id } = ctx.request.body
+    let data = await ctx.service.comment.createReply(id)
     ctx.success(data)
   }
 }

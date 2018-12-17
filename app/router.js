@@ -46,7 +46,13 @@ module.exports = app => {
   router.post('/editArticle', auth, controller.article.backEdit);
 
   // 获取评论列表
-  router.get('/getCommentListByArticleId', auth, controller.article.getCommentListByArticleId);
+  router.get('/getCommentListByArticleId', controller.article.getCommentListByArticleId);
+  // 添加评论
+  router.post('/addComment', auth, controller.article.addComment);
+  // 添加评论回复
+  router.post('/addCommentReply', auth, controller.article.addCommentReply);
+  // 评论点赞
+  router.post('/addCommentLoveNum', auth, controller.article.addCommentLoveNum);
 
   router.get('/users', controller.users.index);
   router.get('/test', controller.users.test);

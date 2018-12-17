@@ -10,8 +10,9 @@ module.exports = {
       user_id: INTEGER,
       user_name: STRING,
       user_header_url: STRING,
-      content: STRING,
-      live_num: INTEGER,
+      content: STRING(600),
+      love_num: INTEGER,
+      love_users: STRING(1000),
       created_at: DATE,
       updated_at: DATE,
     });
