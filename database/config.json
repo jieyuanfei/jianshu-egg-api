@@ -1,7 +1,7 @@
 {
   "development": {
     "username": "root",
-    "password": "123",
+    "password": "root",
     "database": "egg-sequelize-example-dev",
     "host": "127.0.0.1",
     "dialect": "mysql"

@@ -12,7 +12,6 @@ module.exports = {
       user_header_url: STRING,
       content: STRING(600),
       love_num: INTEGER,
-      love_users: STRING(1000),
       created_at: DATE,
       updated_at: DATE,
     });

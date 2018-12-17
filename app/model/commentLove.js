@@ -1,25 +1,21 @@
 'use strict';
 
 module.exports = app => {
-  const { STRING, INTEGER, DATE } = app.Sequelize;
+  const { INTEGER, DATE } = app.Sequelize;
 
   // 第一个是别名 第二个是表名
-  const Comment = app.model.define('t_comments', {
+  const CommentLove = app.model.define('t_comment_loves', {
     id: { type: INTEGER, primaryKey: true, autoIncrement: true },
-    article_id: INTEGER,
+    comment_id: INTEGER,
     user_id: INTEGER,
-    user_name: STRING,
-    user_header_url: STRING,
-    content: STRING(600),
-    love_num: INTEGER,
     created_at: DATE,
-    updated_at: DATE,
+    updated_at: DATE
   }, {
     freezeTableName: true,
-    tableName: 't_comments'
+    tableName: 't_comment_loves'
   });
 
-  Comment.findOneByElement = async function(params) {
+  CommentLove.findOneByElement = async function(params) {
     if (typeof params !== 'object') {
       return {};
     }
@@ -32,7 +28,7 @@ module.exports = app => {
     return data.dataValues;
 
   };
-  Comment.findColumnByElement = async function(Column, params) {
+  CommentLove.findColumnByElement = async function(Column, params) {
     if (typeof params !== 'object') {
       return {};
     }
@@ -41,8 +37,5 @@ module.exports = app => {
     });
 
   };
-  Comment.associate = function() {
-    app.model.Comment.hasMany(app.model.CommentReply, { foreignKey: 'comment_id', targetKey: 'id' });
-  };
-  return Comment;
+  return CommentLove;
 };

@@ -228,8 +228,8 @@ class ArticleController extends Controller {
   // 评论点赞
   async addCommentLoveNum() {
     const { ctx } = this
-    const { id } = ctx.request.body
-    let data = await ctx.service.comment.createReply(id)
+    const { id, LoveId } = ctx.request.body
+    let data = await ctx.service.comment.LoveNum(id, LoveId)
     ctx.success(data)
   }
 }
