@@ -4,10 +4,10 @@
 
 ## 目前规划
 
-- 后端 egg.js （已完成部分功能）
-- 后台管理 （计划中）
-- pc前端 vue （已完成部分功能）
-- 移动端APP react native （已完成部分功能）
+- 后端 egg.js （已完成部分功能）[源码链接](https://github.com/jieyuanfei/jianshu-egg-api)
+- 后台管理 （计划中）[源码链接](https://github.com/jieyuanfei/jianshu-egg-api)
+- pc前端 vue （已完成部分功能）[源码链接](https://github.com/jieyuanfei/jianshu-vue-pc)
+- 移动端APP react native （已完成部分功能）[源码链接](https://github.com/jieyuanfei/jianshu-react-mobile)
 - 小程序 mp-vue （计划中）
 
 ## 快速入门
@@ -33,7 +33,7 @@
 ### 线上地址
   [PC端页面展示](http://39.108.125.74/jianshu/#/)
 ### 图片演示
-#### PC前台
+#### PC前台 [源码链接](https://github.com/jieyuanfei/jianshu-vue-pc)
 
  - 首页
  ![首页](./screenshot/home.gif)
@@ -52,7 +52,7 @@
   ![登录注册](./screenshot/sign.gif)
 
  - APP下载页面
-  ![APP下载页面](./screenshot/introduce.gif) 
+  ![APP下载页面](./screenshot/introduce.gif)
 ### 目录结构
 
 ```
@@ -148,8 +148,6 @@ npm install
 # 运行服务
 npm run dev
 
-
-# 即可通过 http://127.0.0.1:7002访问
 ```
 
 ### 打包
