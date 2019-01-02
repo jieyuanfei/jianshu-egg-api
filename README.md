@@ -20,9 +20,9 @@
 
 - 小程序: [mp-vue](https://reactnative.cn/)
 
-- 前端： 
-  - PC端：[vue](https://cn.vuejs.org/)、[element](http://element-cn.eleme.io/#/zh-CN) 
-  - 后台管理端：[vue](https://cn.vuejs.org/)、[element](http://element-cn.eleme.io/#/zh-CN) 
+- 前端：
+  - PC端：[vue](https://cn.vuejs.org/)、[element](http://element-cn.eleme.io/#/zh-CN)
+  - 后台管理端：[vue](https://cn.vuejs.org/)、[element](http://element-cn.eleme.io/#/zh-CN)
 
 ### 功能特性
 
@@ -34,8 +34,25 @@
   [PC端页面展示](http://39.108.125.74/jianshu/#/)
 ### 图片演示
 #### PC前台
+
  - 首页
- 
+ ![首页](./screenshot/home.gif)
+ ![首页2](./screenshot/home2.gif)
+
+ - 文章详情页-评论回复-点赞-收藏
+  ![详情](./screenshot/detail.gif)
+
+ - 编译文章
+  ![编译文章](./screenshot/write.gif)
+
+ - 关注
+  ![关注](./screenshot/follow.gif)
+
+ - 登录注册
+  ![登录注册](./screenshot/sign.gif)
+
+ - APP下载页面
+  ![APP下载页面](./screenshot/introduce.gif) 
 ### 目录结构
 
 ```
@@ -145,6 +162,3 @@ npm install --production
 # 启动
 npm start
 ```
-
-
- 
