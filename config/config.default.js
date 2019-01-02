@@ -12,10 +12,10 @@ module.exports = appInfo => {
     },
     sequelize: {
       dialect: 'mysql', // support: mysql, mariadb, postgres, mssql
-      database: 'egg-sequelize-example-dev',
-      host: '127.0.0.1',
-      username: 'root',
-      password: 'root',
+      database: '',
+      host: '',
+      username: '',
+      password: '',
       port: 3306,
     },
     user: { // 初始化管理员的账号
@@ -29,8 +29,8 @@ module.exports = appInfo => {
       cert: 'huanggegehaoshuai' // jwt秘钥
     },
     qiniu: { // 这里填写你七牛的Access Key和Secret Key
-      ak: '63gcZSNx8m_9ve2kx9zNAxUaxwZkWp5-whv3GvA0',
-      sk: 'zErEx1r_giJ2ElesrJBfgE-1ZYpz-KA9PAcliNvS'
+      ak: '',
+      sk: ''
     }
   }
 };

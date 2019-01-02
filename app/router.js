@@ -7,6 +7,8 @@ module.exports = app => {
   const { router, controller } = app;
   // 后台授权中间件
   const auth = app.middleware.auth()
+  // 页面跳转
+  router.get('/', controller.page.index);
   // 获取验证码
   router.get('/getCaptcha', controller.client.login.getCaptcha);
   router.get('/admin/getCaptcha', controller.admin.login.getCaptcha);
